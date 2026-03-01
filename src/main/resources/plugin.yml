@@ -1,0 +1,4 @@
+name: "CloudResourcePacks"
+main: "cn.stevei5mc.wdpe.cloudresourcepacks.CloudResourcePacksMain"
+version: "${version}"
+author: "Stevei5mc"

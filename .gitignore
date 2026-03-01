@@ -1,0 +1,17 @@
+.idea/
+target/
+staging/
+
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+pom.xml.*
+*.iml
+*.jar
+*.war
+*.zip
+*.rar
+*.7z
+*.gz
+.project
+.classpath
