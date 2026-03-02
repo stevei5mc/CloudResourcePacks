@@ -1,6 +1,7 @@
 package cn.stevei5mc.wdpe.cloudresourcepacks;
 
 import cn.stevei5mc.wdpe.cloudresourcepacks.listener.ResourcePacksListener;
+import dev.waterdog.waterdogpe.event.defaults.PlayerResourcePackApplyEvent;
 import dev.waterdog.waterdogpe.event.defaults.PlayerResourcePackInfoSendEvent;
 import dev.waterdog.waterdogpe.event.defaults.ResourcePacksRebuildEvent;
 import dev.waterdog.waterdogpe.plugin.Plugin;
@@ -24,6 +25,7 @@ public class CloudResourcePacksMain extends Plugin {
         this.getLogger().info("§aGITHUB:§b https://github.com/stevei5mc/AutoRestart");
         this.getProxy().getEventManager().subscribe(ResourcePacksRebuildEvent.class, ResourcePacksListener::onResourcePacksRebuildEvent);
         this.getProxy().getEventManager().subscribe(PlayerResourcePackInfoSendEvent.class, ResourcePacksListener::onPlayerResourcePackInfoSendEvent);
+        this.getProxy().getEventManager().subscribe(PlayerResourcePackApplyEvent.class, ResourcePacksListener::onPlayerResourcePackApplyEvent);
     }
 
     @Override
