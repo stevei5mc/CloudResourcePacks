@@ -12,6 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      java-version: '17'
     outputs:
       version: ${{ steps.getInfo.outputs.version }}
       repoName: ${{ steps.getInfo.outputs.repoName }}
@@ -45,10 +47,10 @@ jobs:
             core.setOutput('actionUrl', '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}');
       - name: 拉取代码
         uses: actions/checkout@v6
-      - name: 安装java8
+      - name: 安装java${{ env.java-version }}
         uses: actions/setup-java@v5
         with:
-          java-version: '8'
+          java-version: '{{ env.java-version }}'
           distribution: 'temurin'
       - name: 缓存本地 maven 仓库
         uses: actions/cache@v5

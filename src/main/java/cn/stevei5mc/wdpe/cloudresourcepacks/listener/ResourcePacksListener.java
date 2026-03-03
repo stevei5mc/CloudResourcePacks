@@ -66,15 +66,15 @@ public class ResourcePacksListener {
             packsId.forEach(permissionPackId -> {
                 if (loadPacksInfoMap.containsKey(UUID.fromString(permissionPackId))) {
                     if (loadPackId.contains(UUID.fromString(permissionPackId))) {
-                        main.getLogger().info("§c找到目标资源包，但在配置中出现了重复，目标资源包ID§f=§e" + permissionPackId);
+                        main.getLogger().info("§c找到目标资源包，但在配置中出现了重复，目标资源包ID§f=§e" + permissionPackId + "§a，目标资源包所需权限§f=§e" + permission);
                     }else {
-                        main.getLogger().info("§a寻找到目标资源包，目标资源包ID§f=§e" + permissionPackId);
+                        main.getLogger().info("§c寻找到目标资源包，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
                         permissionPacksInfo.getResourcePackInfos().add(loadPacksInfoMap.get(UUID.fromString(permissionPackId)));
                         permissionPacksStack.getResourcePacks().add(loadPacksStackMap.get(permissionPackId));
                         loadPackId.add(UUID.fromString(permissionPackId));
                     }
                 } else {
-                    main.getLogger().info("§c目标资源包无法找到，目标资源包ID§f=§e" + permissionPackId);
+                    main.getLogger().info("§c目标资源包无法找到，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
                 }
             });
             permissionResourcePacksInfoMap.put(permission, permissionPacksInfo);
