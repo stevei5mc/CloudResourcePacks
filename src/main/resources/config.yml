@@ -1,2 +1,6 @@
-test.pack.1:
-  - "4d068b2d-293d-435e-bc5f-e657c28a2d42"
+default_packs:
+  - "uuid"
+
+need_permission_packs:
+  test.pack.1:
+    - "uuid"
