@@ -22,7 +22,7 @@ public class CloudResourcePacksMain extends Plugin {
         this.saveResource("config.yml");
         this.config = new YamlConfig(this.getDataFolder() + "/config.yml");
         this.getLogger().warn("§c警告! §c本插件为免费且开源的，如果您付费获取获取的，则有可能被误导");
-        this.getLogger().info("§aGITHUB:§b https://github.com/stevei5mc/AutoRestart");
+        this.getLogger().info("§aGITHUB:§b https://github.com/stevei5mc/CloudResourcePacks");
         this.getProxy().getEventManager().subscribe(ResourcePacksRebuildEvent.class, ResourcePacksListener::onResourcePacksRebuildEvent);
         this.getProxy().getEventManager().subscribe(PlayerResourcePackInfoSendEvent.class, ResourcePacksListener::onPlayerResourcePackInfoSendEvent);
         this.getProxy().getEventManager().subscribe(PlayerResourcePackApplyEvent.class, ResourcePacksListener::onPlayerResourcePackApplyEvent);

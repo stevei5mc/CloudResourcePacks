@@ -31,13 +31,8 @@ public class ResourcePacksListener {
             return;
         }
 
-        main.getProxy().getPackManager().getPacksInfoPacket().getResourcePackInfos().forEach(pack -> {
-            loadPacksInfoMap.put(pack.getPackId(), pack);
-        });
-        main.getProxy().getPackManager().getStackPacket().getResourcePacks().forEach(pack -> {
-            loadPacksStackMap.put(pack.getPackId(), pack);
-        });
-
+        main.getProxy().getPackManager().getPacksInfoPacket().getResourcePackInfos().forEach(pack -> loadPacksInfoMap.put(pack.getPackId(), pack));
+        main.getProxy().getPackManager().getStackPacket().getResourcePacks().forEach(pack -> loadPacksStackMap.put(pack.getPackId(), pack));
 
         ArrayList<String> defaultPacks = new ArrayList<>(main.getConfig().getStringList("default_packs"));
 
@@ -84,37 +79,57 @@ public class ResourcePacksListener {
 
 
     public static void onPlayerResourcePackInfoSendEvent(PlayerResourcePackInfoSendEvent event) {
-        if (!permissionResourcePacksInfoMap.isEmpty()) {
-            ResourcePacksInfoPacket sendPacks = new ResourcePacksInfoPacket();
+        if (main.getProxy().getPackManager().getPacks().isEmpty()) {
+            return;
+        }
+        ResourcePacksInfoPacket sendPacks = new ResourcePacksInfoPacket();
+        sendPacks.setWorldTemplateId(event.getPacket().getWorldTemplateId());
+        sendPacks.setWorldTemplateVersion(event.getPacket().getWorldTemplateVersion());
+        sendPacks.setForcedToAccept(event.getPacket().isForcedToAccept());
+        sendPacks.setHasAddonPacks(event.getPacket().isHasAddonPacks());
+        sendPacks.setScriptingEnabled(event.getPacket().isScriptingEnabled());
+        sendPacks.setVibrantVisualsForceDisabled(event.getPacket().isVibrantVisualsForceDisabled());
+        sendPacks.setForcingServerPacksEnabled(event.getPacket().isForcingServerPacksEnabled());
 
-            sendPacks.setWorldTemplateId(event.getPacket().getWorldTemplateId());
-            sendPacks.setWorldTemplateVersion(event.getPacket().getWorldTemplateVersion());
-            sendPacks.setForcedToAccept(main.getProxy().getConfiguration().isForceServerPacks());
-
+        if (!defaultResourcePacksInfo.getResourcePackInfos().isEmpty()) {
             sendPacks.getResourcePackInfos().addAll(defaultResourcePacksInfo.getResourcePackInfos());
+        }
 
+        if (!permissionResourcePacksInfoMap.isEmpty()) {
             permissionResourcePacksInfoMap.forEach((permission, packsInfo) -> {
                 if (event.getPlayer().hasPermission(permission) && !packsInfo.getResourcePackInfos().isEmpty()) {
                     sendPacks.getResourcePackInfos().addAll(packsInfo.getResourcePackInfos());
                 }
             });
-
-            event.setPacket(sendPacks);
         }
+
+        event.setPacket(sendPacks);
     }
 
     public static void onPlayerResourcePackApplyEvent(PlayerResourcePackApplyEvent event) {
+        if (main.getProxy().getPackManager().getPacks().isEmpty()) {
+            return;
+        }
+
+        ResourcePackStackPacket stackPacket = new ResourcePackStackPacket();
+        stackPacket.setForcedToAccept(event.getStackPacket().isForcedToAccept());
+        stackPacket.setGameVersion(event.getStackPacket().getGameVersion());
+        stackPacket.getExperiments().addAll(event.getStackPacket().getExperiments());
+        stackPacket.setExperimentsPreviouslyToggled(event.getStackPacket().isExperimentsPreviouslyToggled());
+        stackPacket.setHasEditorPacks(event.getStackPacket().isHasEditorPacks());
+
+        if (!defaultResourcePacksStack.getResourcePacks().isEmpty()) {
+            stackPacket.getResourcePacks().addAll(defaultResourcePacksStack.getResourcePacks());
+        }
+
         if (!permissionResourcePacksStackMap.isEmpty()) {
-            event.getStackPacket().getResourcePacks().clear();
-
-            event.getStackPacket().getResourcePacks().addAll(defaultResourcePacksStack.getResourcePacks());
-
             permissionResourcePacksStackMap.forEach((permission, packsStack) -> {
                 if (event.getPlayer().hasPermission(permission) && !packsStack.getResourcePacks().isEmpty()) {
-                    event.getStackPacket().getResourcePacks().addAll(packsStack.getResourcePacks());
+                    stackPacket.getResourcePacks().addAll(packsStack.getResourcePacks());
                 }
             });
-
         }
+
+        event.setStackPacket(stackPacket);
     }
 }
