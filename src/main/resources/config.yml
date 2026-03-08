@@ -1,6 +1,10 @@
+# 默认包配置
+# 所有玩家都会自动加载这些包
 default_packs:
-  - "uuid"
+  - "pack header uuid"
 
+# 权限包配置
+# 只有拥有对应权限的玩家才能加载这些包
 need_permission_packs:
   test.pack.1:
-    - "uuid"
+    - "pack header uuid"

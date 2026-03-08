@@ -15,7 +15,6 @@ import java.util.UUID;
 public class ResourcePacksListener {
 
     private static final CloudResourcePacksMain main = CloudResourcePacksMain.getInstance();
-    private static final ArrayList<UUID> loadPackId = new ArrayList<>();
     private static final ResourcePacksInfoPacket defaultResourcePacksInfo = new ResourcePacksInfoPacket();
     private static final ResourcePackStackPacket  defaultResourcePacksStack = new ResourcePackStackPacket();
     private static final HashMap<String, ResourcePacksInfoPacket> permissionResourcePacksInfoMap = new HashMap<>();
@@ -26,6 +25,7 @@ public class ResourcePacksListener {
         HashMap<String, ArrayList<String>> permissionPacksMaps = new HashMap<>((Map<? extends String, ? extends ArrayList<String>>) main.getConfig().get("need_permission_packs"));
         HashMap<UUID, ResourcePacksInfoPacket.Entry> loadPacksInfoMap = new HashMap<>();
         HashMap<String, ResourcePackStackPacket.Entry> loadPacksStackMap = new HashMap<>();
+        ArrayList<UUID> loadPackId = new ArrayList<>();
 
         if (main.getProxy().getPackManager().getPacksInfoPacket().getResourcePackInfos().isEmpty() && main.getProxy().getPackManager().getStackPacket().getResourcePacks().isEmpty()) {
             return;
@@ -82,28 +82,28 @@ public class ResourcePacksListener {
         if (main.getProxy().getPackManager().getPacks().isEmpty()) {
             return;
         }
-        ResourcePacksInfoPacket sendPacks = new ResourcePacksInfoPacket();
-        sendPacks.setWorldTemplateId(event.getPacket().getWorldTemplateId());
-        sendPacks.setWorldTemplateVersion(event.getPacket().getWorldTemplateVersion());
-        sendPacks.setForcedToAccept(event.getPacket().isForcedToAccept());
-        sendPacks.setHasAddonPacks(event.getPacket().isHasAddonPacks());
-        sendPacks.setScriptingEnabled(event.getPacket().isScriptingEnabled());
-        sendPacks.setVibrantVisualsForceDisabled(event.getPacket().isVibrantVisualsForceDisabled());
-        sendPacks.setForcingServerPacksEnabled(event.getPacket().isForcingServerPacksEnabled());
+        ResourcePacksInfoPacket infoPacket = new ResourcePacksInfoPacket();
+        infoPacket.setWorldTemplateId(event.getPacket().getWorldTemplateId());
+        infoPacket.setWorldTemplateVersion(event.getPacket().getWorldTemplateVersion());
+        infoPacket.setForcedToAccept(event.getPacket().isForcedToAccept());
+        infoPacket.setHasAddonPacks(event.getPacket().isHasAddonPacks());
+        infoPacket.setScriptingEnabled(event.getPacket().isScriptingEnabled());
+        infoPacket.setVibrantVisualsForceDisabled(event.getPacket().isVibrantVisualsForceDisabled());
+        infoPacket.setForcingServerPacksEnabled(event.getPacket().isForcingServerPacksEnabled());
 
         if (!defaultResourcePacksInfo.getResourcePackInfos().isEmpty()) {
-            sendPacks.getResourcePackInfos().addAll(defaultResourcePacksInfo.getResourcePackInfos());
+            infoPacket.getResourcePackInfos().addAll(defaultResourcePacksInfo.getResourcePackInfos());
         }
 
         if (!permissionResourcePacksInfoMap.isEmpty()) {
             permissionResourcePacksInfoMap.forEach((permission, packsInfo) -> {
                 if (event.getPlayer().hasPermission(permission) && !packsInfo.getResourcePackInfos().isEmpty()) {
-                    sendPacks.getResourcePackInfos().addAll(packsInfo.getResourcePackInfos());
+                    infoPacket.getResourcePackInfos().addAll(packsInfo.getResourcePackInfos());
                 }
             });
         }
 
-        event.setPacket(sendPacks);
+        event.setPacket(infoPacket);
     }
 
     public static void onPlayerResourcePackApplyEvent(PlayerResourcePackApplyEvent event) {
