@@ -6,6 +6,9 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'
       - '[0-9]+.[0-9]+.[0-9]+-beta[0-9]+'
   pull_request:
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
   workflow_dispatch:
 
 jobs:
@@ -72,13 +75,13 @@ jobs:
       - name: 输出获取到的 pom.xml 的信息
         run: |
           echo Group id: ${{ steps.getPomInfo.outputs.groupId }}
-          echo Artifact id: ${{ steps.getPomInfo.outputs.artifactd }}
+          echo Artifact id: ${{ steps.getPomInfo.outputs.artifactId }}
           echo Version: ${{ steps.getPomInfo.outputs.version }}
       - name: 构建
         run: |
           mvn -B package --file pom.xml
-          mkdir staging
-          cp target/*.jar staging
+      - name: 整理文件
+        run: mkdir staging && cp target/*.jar staging && ls -lah ./staging
       - name: 收集构建文件
         uses: actions/upload-artifact@v6
         with:
@@ -108,5 +111,5 @@ jobs:
           tag: ${{ needs.build.outputs.version }}
           name: ${{ needs.build.outputs.version }}
           token: ${{ github.token }}
-          bodyFile: ./docs/changelogs/${{ needs.build.outputs.version }}.md
+          body: "Version ${{ needs.build.outputs.version }}"
           artifacts: ./staging/*.*

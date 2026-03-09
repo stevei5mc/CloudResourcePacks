@@ -16,6 +16,7 @@
   - 打开包的 manifest.json，复制 header 里的 uuid。
   - ❌ 不要复制 modules 里的 UUID。
 2. 怎么填？
+  - 默认包与权限包均可填写多个包`
   - 默认包 (default_packs)：直接填 UUID 列表。
   - 权限包 (need_permission_packs)：先写权限名，再在下方列表填对应的 UUID。
 3. 配置示例
