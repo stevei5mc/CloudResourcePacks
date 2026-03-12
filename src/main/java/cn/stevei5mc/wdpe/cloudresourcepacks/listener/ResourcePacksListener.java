@@ -22,10 +22,11 @@ public class ResourcePacksListener {
 
     @SuppressWarnings("unchecked")
     public static void onResourcePacksRebuildEvent(ResourcePacksRebuildEvent event) {
-        HashMap<String, ArrayList<String>> permissionPacksMaps = new HashMap<>((Map<? extends String, ? extends ArrayList<String>>) main.getConfig().get("need_permission_packs"));
+        ArrayList<String> permissionsList = new ArrayList<>(main.getNeedPermissionPacksConfig().getAll().keySet());
         HashMap<UUID, ResourcePacksInfoPacket.Entry> loadPacksInfoMap = new HashMap<>();
         HashMap<String, ResourcePackStackPacket.Entry> loadPacksStackMap = new HashMap<>();
         ArrayList<UUID> loadPackId = new ArrayList<>();
+
 
         if (main.getProxy().getPackManager().getPacksInfoPacket().getResourcePackInfos().isEmpty() && main.getProxy().getPackManager().getStackPacket().getResourcePacks().isEmpty()) {
             return;
@@ -34,7 +35,7 @@ public class ResourcePacksListener {
         main.getProxy().getPackManager().getPacksInfoPacket().getResourcePackInfos().forEach(pack -> loadPacksInfoMap.put(pack.getPackId(), pack));
         main.getProxy().getPackManager().getStackPacket().getResourcePacks().forEach(pack -> loadPacksStackMap.put(pack.getPackId(), pack));
 
-        ArrayList<String> defaultPacks = new ArrayList<>(main.getConfig().getStringList("default_packs"));
+        ArrayList<String> defaultPacks = new ArrayList<>(main.getDefaultPacksConfig().getStringList("list", new ArrayList<>()));
 
         // 加载默认的资源包
         if (!defaultPacks.isEmpty()) {
@@ -55,28 +56,33 @@ public class ResourcePacksListener {
         }
 
         // 加载需要权限的资源包
-        permissionPacksMaps.forEach((permission, packsId) -> {
+        for (String permission: permissionsList) {
+            if (!main.getNeedPermissionPacksConfig().exists(permission)) {
+                continue;
+            }
+            ArrayList<String> packsIdList = new ArrayList<>(main.getNeedPermissionPacksConfig().getStringList(permission, new ArrayList<>()));
             ResourcePacksInfoPacket permissionPacksInfo = new ResourcePacksInfoPacket();
             ResourcePackStackPacket permissionPacksStack = new ResourcePackStackPacket();
-            packsId.forEach(permissionPackId -> {
-                if (loadPacksInfoMap.containsKey(UUID.fromString(permissionPackId))) {
-                    if (loadPackId.contains(UUID.fromString(permissionPackId))) {
-                        main.getLogger().info("§c找到目标资源包，但在配置中出现了重复，目标资源包ID§f=§e" + permissionPackId + "§a，目标资源包所需权限§f=§e" + permission);
-                    }else {
-                        main.getLogger().info("§c寻找到目标资源包，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
-                        permissionPacksInfo.getResourcePackInfos().add(loadPacksInfoMap.get(UUID.fromString(permissionPackId)));
-                        permissionPacksStack.getResourcePacks().add(loadPacksStackMap.get(permissionPackId));
-                        loadPackId.add(UUID.fromString(permissionPackId));
+            if (!packsIdList.isEmpty()) {
+                packsIdList.forEach(permissionPackId -> {
+                    if (loadPacksInfoMap.containsKey(UUID.fromString(permissionPackId))) {
+                        if (loadPackId.contains(UUID.fromString(permissionPackId))) {
+                            main.getLogger().info("§c找到目标资源包，但在配置中出现了重复，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
+                        }else {
+                            main.getLogger().info("§a寻找到目标资源包，目标资源包ID§f=§e" + permissionPackId + "§a，目标资源包所需权限§f=§e" + permission);
+                            permissionPacksInfo.getResourcePackInfos().add(loadPacksInfoMap.get(UUID.fromString(permissionPackId)));
+                            permissionPacksStack.getResourcePacks().add(loadPacksStackMap.get(permissionPackId));
+                            loadPackId.add(UUID.fromString(permissionPackId));
+                        }
+                    } else {
+                        main.getLogger().info("§c目标资源包无法找到，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
                     }
-                } else {
-                    main.getLogger().info("§c目标资源包无法找到，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
-                }
-            });
+                });
+            }
             permissionResourcePacksInfoMap.put(permission, permissionPacksInfo);
             permissionResourcePacksStackMap.put(permission, permissionPacksStack);
-        });
+        }
     }
-
 
     public static void onPlayerResourcePackInfoSendEvent(PlayerResourcePackInfoSendEvent event) {
         if (main.getProxy().getPackManager().getPacks().isEmpty()) {
