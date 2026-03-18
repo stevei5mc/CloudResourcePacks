@@ -1,6 +1,5 @@
-package cn.stevei5mc.wdpe.cloudresourcepacks.listener;
+package cn.stevei5mc.wdpe.cloudresourcepacks;
 
-import cn.stevei5mc.wdpe.cloudresourcepacks.CloudResourcePacksMain;
 import dev.waterdog.waterdogpe.event.defaults.PlayerResourcePackApplyEvent;
 import dev.waterdog.waterdogpe.event.defaults.PlayerResourcePackInfoSendEvent;
 import dev.waterdog.waterdogpe.event.defaults.ResourcePacksRebuildEvent;
@@ -9,7 +8,6 @@ import org.cloudburstmc.protocol.bedrock.packet.ResourcePacksInfoPacket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class ResourcePacksListener {
@@ -20,7 +18,7 @@ public class ResourcePacksListener {
     private static final HashMap<String, ResourcePacksInfoPacket> permissionResourcePacksInfoMap = new HashMap<>();
     private static final HashMap<String, ResourcePackStackPacket> permissionResourcePacksStackMap = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
     public static void onResourcePacksRebuildEvent(ResourcePacksRebuildEvent event) {
         ArrayList<String> permissionsList = new ArrayList<>(main.getNeedPermissionPacksConfig().getAll().keySet());
         HashMap<UUID, ResourcePacksInfoPacket.Entry> loadPacksInfoMap = new HashMap<>();
@@ -40,7 +38,7 @@ public class ResourcePacksListener {
         // 加载默认的资源包
         if (!defaultPacks.isEmpty()) {
             defaultPacks.forEach(defaultPackId -> {
-                if (loadPacksInfoMap.containsKey(UUID.fromString(defaultPackId))) {
+                if (Utils.checkUUID(defaultPackId) && loadPacksInfoMap.containsKey(UUID.fromString(defaultPackId))) {
                     if (loadPackId.contains(UUID.fromString(defaultPackId))) {
                         main.getLogger().info("§c找到目标资源包，但在配置中出现了重复，目标资源包ID§f=§e" + defaultPackId);
                     }else {
@@ -65,7 +63,7 @@ public class ResourcePacksListener {
             ResourcePackStackPacket permissionPacksStack = new ResourcePackStackPacket();
             if (!packsIdList.isEmpty()) {
                 packsIdList.forEach(permissionPackId -> {
-                    if (loadPacksInfoMap.containsKey(UUID.fromString(permissionPackId))) {
+                    if (Utils.checkUUID(permissionPackId) && loadPacksInfoMap.containsKey(UUID.fromString(permissionPackId))) {
                         if (loadPackId.contains(UUID.fromString(permissionPackId))) {
                             main.getLogger().info("§c找到目标资源包，但在配置中出现了重复，目标资源包ID§f=§e" + permissionPackId + "§c，目标资源包所需权限§f=§e" + permission);
                         }else {

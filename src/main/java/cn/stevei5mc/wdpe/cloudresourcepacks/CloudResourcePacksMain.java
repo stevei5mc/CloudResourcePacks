@@ -1,6 +1,5 @@
 package cn.stevei5mc.wdpe.cloudresourcepacks;
 
-import cn.stevei5mc.wdpe.cloudresourcepacks.listener.ResourcePacksListener;
 import dev.waterdog.waterdogpe.event.defaults.PlayerResourcePackApplyEvent;
 import dev.waterdog.waterdogpe.event.defaults.PlayerResourcePackInfoSendEvent;
 import dev.waterdog.waterdogpe.event.defaults.ResourcePacksRebuildEvent;
