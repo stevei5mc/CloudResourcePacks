@@ -18,7 +18,6 @@ public class ResourcePacksListener {
     private static final HashMap<String, ResourcePacksInfoPacket> permissionResourcePacksInfoMap = new HashMap<>();
     private static final HashMap<String, ResourcePackStackPacket> permissionResourcePacksStackMap = new HashMap<>();
 
-//    @SuppressWarnings("unchecked")
     public static void onResourcePacksRebuildEvent(ResourcePacksRebuildEvent event) {
         ArrayList<String> permissionsList = new ArrayList<>(main.getNeedPermissionPacksConfig().getAll().keySet());
         HashMap<UUID, ResourcePacksInfoPacket.Entry> loadPacksInfoMap = new HashMap<>();

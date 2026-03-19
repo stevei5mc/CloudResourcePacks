@@ -11,9 +11,9 @@ public class Utils {
 
         try {
             UUID.fromString(uuid);
+            return true;
         }catch (IllegalArgumentException ignore) {
             CloudResourcePacksMain.getInstance().getLogger().warn(uuid + "不是合法的UUID ！");
-            return false;
         }
         return false;
     }
