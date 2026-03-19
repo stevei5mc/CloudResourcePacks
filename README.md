@@ -17,8 +17,8 @@
   - ❌ 不要复制 modules 里的 UUID。
 2. 怎么填？
   - 默认包与权限包均可填写多个包`
-  - 默认包 (default_packs.yml)：直接填 UUID 列表。
-  - 权限包 (need_permission_packs.yml)：先写权限名，再在下方列表填对应的 UUID。
+  - 默认包 `default_packs.yml`直接填 UUID 到列表中即可。
+  - 权限包 `need_permission_packs.yml` 先填写目标资源包需要的权限名，再在权限名的下方列表填对应的 UUID。
 3. 配置示例
 default_packs.yml
 ```yml
@@ -32,7 +32,8 @@ need_permission_packs.yml
 ```yml
 # 权限资源包配置
 # 只有拥有对应权限的玩家才能加载这些包
+# 一个权限节点可分配多给资源包
 # 权限名称: [命名空间.权限标识]
 vip.pack.1:        # 需要先定义此权限
-  - "abcdef12-3456-7890-abcd-ef1234567890"  # VIP专属纹理包
+  - "abcdef12-3456-7890-abcd-ef1234567890"
 ```
